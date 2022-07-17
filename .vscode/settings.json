@@ -1,0 +1,26 @@
+{
+  "[javascript]": {
+    "editor.codeActionsOnSave": {
+      "eslint.formatOnSave": true,
+      "source.fixAll": true
+    }
+  },
+  "[javascriptreact]": {
+    "editor.codeActionsOnSave": {
+      "eslint.formatOnSave": true,
+      "source.fixAll": true
+    }
+  },
+  "[typescript]" : {
+    "editor.codeActionsOnSave": {
+      "eslint.formatOnSave": true,
+      "source.fixAll": true
+    }
+  },
+  "[typescriptreact]": {
+    "editor.codeActionsOnSave": {
+      "eslint.formatOnSave": true,
+      "source.fixAll": true
+    }
+  }
+}
