@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { useCameraStream } from "../hooks";
+import React, { useEffect, useRef } from 'react';
+import { useCameraStream } from '../hooks';
 
 
 export function JoinMeeting() {

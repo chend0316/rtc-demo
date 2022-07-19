@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Device, getCameraDeviceList, getCameraStream } from "../services/device";
+import { useEffect, useRef, useState } from 'react';
+import { Device, getCameraDeviceList, getCameraStream } from '../services/device';
 
 export function useCameraDeviceList() {
   const [cameraList, setCameraList] = useState<Device[]>([]);
@@ -17,12 +17,31 @@ export function useFetchDevicePermission() {
   }, []);
 }
 
-export function useCameraStream() {
+// export function useCameraStream() {
+//   const [stream, setStream] = useState<MediaStream>();
+
+//   useEffect(() => {
+//     getCameraStream().then(setStream);
+//   },[]);
+
+//   return {stream};
+// }
+
+export function useCameraStream(resolution?: { width: number, height: number }) {
   const [stream, setStream] = useState<MediaStream>();
 
   useEffect(() => {
     getCameraStream().then(setStream);
   },[]);
 
-  return {stream};
+  useEffect(() => {
+    if (stream && resolution) {
+      const track = stream.getVideoTracks()[0];
+      const constraints = {width: {exact: resolution.width}, height: {exact: resolution.height}};
+      console.log('change resolution to', resolution.width, resolution.height);
+      track.applyConstraints(constraints);
+    }
+  }, [stream, resolution]);
+
+  return stream;
 }
