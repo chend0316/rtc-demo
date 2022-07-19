@@ -4,17 +4,17 @@ import { useCameraStream } from '../hooks';
 
 export function JoinMeeting() {
   const cameraEl = useRef<HTMLVideoElement>(null);
-  const {stream: cameraStream} = useCameraStream();
+  const stream = useCameraStream();
 
   useEffect(() => {
-    if (cameraStream) {
-      cameraEl.current.srcObject = cameraStream;
+    if (stream) {
+      cameraEl.current.srcObject = stream;
     }
-  }, [cameraStream]);
+  }, [stream]);
 
   return <div>
     {
-      cameraStream
+      stream
         ? <video ref={cameraEl} autoPlay playsInline />
         : <div>没画面</div>
     }
