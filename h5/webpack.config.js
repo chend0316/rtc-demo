@@ -1,25 +1,25 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const path = require("path");
-const APP_PATH = path.resolve(__dirname, "src");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const APP_PATH = path.resolve(__dirname, 'src');
 
 module.exports = {
-  entry: "./src/index.tsx",
+  entry: './src/index.tsx',
 
   output: {
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
   },
 
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".json"]
+    extensions: ['.ts', '.tsx', '.js', '.json']
   },
 
   module: {
-    rules: [{ test: /\.(ts|js)x?$/, loader: "babel-loader", exclude: /node_modules/ }],
+    rules: [{ test: /\.(ts|js)x?$/, loader: 'babel-loader', exclude: /node_modules/ }],
   },
 
   plugins: [
-    new HtmlWebpackPlugin({ inject: true, template: path.join(APP_PATH, "index.html") }),
+    new HtmlWebpackPlugin({ inject: true, template: path.join(APP_PATH, 'index.html') }),
   ],
 
   performance: {
@@ -28,9 +28,5 @@ module.exports = {
 
   devServer: {
     open: true,
-    https: {
-      cert: "./configs/server.crt",
-      key: "./configs/server.key"
-    }
   }
 };

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Device, getCameraDeviceList, getCameraStream } from '../services/device';
+import { Device, getCameraDeviceList, getCameraStream, getMicStream } from '../services/device';
 
 export function useCameraDeviceList() {
   const [cameraList, setCameraList] = useState<Device[]>([]);
@@ -11,21 +11,21 @@ export function useCameraDeviceList() {
   return {cameraList};
 }
 
-export function useFetchDevicePermission() {
-  useEffect(() => {
-    useFetchDevicePermission();
-  }, []);
-}
-
-// export function useCameraStream() {
-//   const [stream, setStream] = useState<MediaStream>();
-
+// export function useFetchDevicePermission() {
 //   useEffect(() => {
-//     getCameraStream().then(setStream);
-//   },[]);
-
-//   return {stream};
+//     useFetchDevicePermission();
+//   }, []);
 // }
+
+export function useMicStream() {
+  const [stream, setStream] = useState<MediaStream>();
+
+  useEffect(() => {
+    getMicStream().then(setStream);
+  },[]);
+
+  return stream;
+}
 
 export function useCameraStream(resolution?: { width: number, height: number }) {
   const [stream, setStream] = useState<MediaStream>();

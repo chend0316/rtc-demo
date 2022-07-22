@@ -1,32 +1,36 @@
-let hasMicPermission = false;
-let hasCameraPermission = false;
-let cameraStream: MediaStream | undefined = undefined;
-async function fetchDevicePermission() {
+let _hasMicPermission = false;
+let _hasCameraPermission = false;
+
+export async function getCameraStream() {
   try {
-    if (!hasMicPermission) {
-      await navigator.mediaDevices.getUserMedia({audio: true, video: false});
-      hasMicPermission = true;
-    }
-    console.log('mic permission fetched');
+    const cameraStream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
+    _hasCameraPermission = true;
+    console.log('camera permission fetched');
+    return cameraStream;
   } catch (err) {
-
-  }
-
-  try {
-    if (!hasCameraPermission) {
-      cameraStream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
-      hasCameraPermission = true;
-    }
-    console.log('camera permission fetched', cameraStream);
-  } catch (err) {
-
+    _hasCameraPermission = false;
+    return null;
   }
 }
 
-export async function getCameraStream() {
-  await fetchDevicePermission();
-  console.log('get camera stream', cameraStream);
-  return cameraStream;
+export async function getMicStream() {
+  try {
+    const micStream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+    _hasMicPermission = true;
+    console.log('camera permission fetched');
+    return micStream;
+  } catch (err) {
+    _hasMicPermission = false;
+    return null;
+  }
+}
+
+export function hasMicPermission() {
+  return _hasMicPermission;
+}
+
+export function hasCameraPermission() {
+  return _hasCameraPermission;
 }
 
 export interface Device {
@@ -36,7 +40,6 @@ export interface Device {
 }
 
 export async function getCameraDeviceList(): Promise<Device[]> {
-  await fetchDevicePermission();
   const list = await navigator.mediaDevices.enumerateDevices();
   return list.filter(item => item.kind === 'videoinput')
     .map(item => {
