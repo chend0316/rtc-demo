@@ -1,7 +1,8 @@
 import React from 'react';
 
-export function DevPanel () {
+export const MultiCamera: React.FC = () => {
 
     return <div>
+
     </div>;
-}
+};

@@ -1,47 +1,56 @@
-import { useEffect, useRef, useState } from 'react';
-import { Device, getCameraDeviceList, getCameraStream, getMicStream } from '../services/device';
+import { useEffect, useState } from 'react';
+import { closeInputStream, Device, DeviceType, getDeviceListByType, getInputStream } from '../services/device';
 
-export function useCameraDeviceList() {
-  const [cameraList, setCameraList] = useState<Device[]>([]);
+export function useDeviceListByType(type: DeviceType) {
+  const [list, setList] = useState<Device[]>([]);
+  const [currentId, setCurrentId] = useState<string>('');
 
   useEffect(() => {
-    getCameraDeviceList().then(setCameraList);
+    getDeviceListByType(type).then(val => {
+      setList(val);
+      if (!currentId && val.length > 0) {
+        setCurrentId(val[0].id);
+      }
+    });
   }, []);
 
-  return {cameraList};
+  return {list, currentId, setCurrentId};
 }
 
-// export function useFetchDevicePermission() {
-//   useEffect(() => {
-//     useFetchDevicePermission();
-//   }, []);
-// }
-
-export function useMicStream() {
-  const [stream, setStream] = useState<MediaStream>();
-
-  useEffect(() => {
-    getMicStream().then(setStream);
-  },[]);
-
-  return stream;
+interface UseInputStreamParams {
+  cameraDeviceId: string;
+  micDeviceId: string;
+  muteCamera?: boolean;
+  muteMic?: boolean;
+  resolution?: { width: number; height: number };
 }
-
-export function useCameraStream(resolution?: { width: number, height: number }) {
-  const [stream, setStream] = useState<MediaStream>();
+export function useInputStream(params: UseInputStreamParams) {
+  const { cameraDeviceId, micDeviceId, muteCamera, muteMic, resolution } = params;
+  const [ stream, setStream ] = useState<MediaStream>();
 
   useEffect(() => {
-    getCameraStream().then(setStream);
-  },[]);
+    getInputStream({
+      cameraDeviceId: !muteCamera ? cameraDeviceId : null,
+      micDeviceId: !muteMic ? micDeviceId : null
+    })
+    .then((v) => {
+      console.log(`get input stream success, camera mute: ${muteCamera}, mic mute: ${muteMic}`);
+      return v;
+    })
+    .then(setStream);
+    return () => {
+      closeInputStream();
+    };
+  }, [cameraDeviceId, micDeviceId, muteMic, muteCamera]);
 
   useEffect(() => {
     if (stream && resolution) {
       const track = stream.getVideoTracks()[0];
       const constraints = {width: {exact: resolution.width}, height: {exact: resolution.height}};
       console.log('change resolution to', resolution.width, resolution.height);
-      track.applyConstraints(constraints);
+      track.applyConstraints(constraints); 
     }
   }, [stream, resolution]);
 
-  return stream;
+  return { stream };
 }

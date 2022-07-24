@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useMicStream } from '../hooks';
 import { SoundMeter } from '../services/SoundMeter';
 
-export function Volume() {
-    const stream = useMicStream();
+interface VolumeProps {
+    stream: MediaStream;
+}
+export const Volume: React.FC<VolumeProps> = ({stream}) => {
     const [volume, setVolume] = useState(0);
 
     useEffect(() => {
@@ -11,9 +12,8 @@ export function Volume() {
         const soundMeter = new SoundMeter();
         soundMeter.connectToSource(stream);
         const timerId = setInterval(() => {
-            const val = soundMeter.instant * 348 + 1;
-            setVolume(Math.floor(val * 100) / 100);
-        }, 100);
+            setVolume(Math.floor(soundMeter.instant * 100) / 100);
+        }, 200);
         return () => {
             clearInterval(timerId);
             soundMeter.stop();
@@ -22,12 +22,12 @@ export function Volume() {
 
     return <div>
         <p>音量</p>
-        {volume} %
+        {volume * 100} %
         <div style={{
-                width:volume + 'px',
+                width:(volume * 348) + 'px',
                 height:'10px',
                 backgroundColor:'#8dc63f',
                 marginTop:'20px',
             }}/>
     </div>;
-}
+};

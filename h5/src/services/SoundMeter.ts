@@ -29,14 +29,16 @@ export class SoundMeter {
     }
     
     connectToSource(stream: MediaStream) {
-      this.mic = this.context.createMediaStreamSource(stream);
-      this.mic.connect(this.script);
-      // necessary to make sample run, but should not be.
-      this.script.connect(this.context.destination);
+      try {
+        this.mic = this.context.createMediaStreamSource(stream);
+        this.mic.connect(this.script);
+        // necessary to make sample run, but should not be.
+        this.script.connect(this.context.destination);
+      } catch (err) {}
     }
     
     stop() {
-      this.mic.disconnect();
+      this.mic?.disconnect();
       this.script.disconnect();
     }
 }
